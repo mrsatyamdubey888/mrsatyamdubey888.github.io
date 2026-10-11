@@ -439,6 +439,41 @@ section h2::before{font:600 12px "JetBrains Mono",monospace;letter-spacing:.22em
 /* footer */
 .bigword{font:700 clamp(54px,14.5vw,210px)/.9 "Space Grotesk",sans-serif;letter-spacing:-.06em;text-align:center;color:transparent;-webkit-text-stroke:1px rgba(255,255,255,.2);white-space:nowrap;overflow:hidden;padding:10px 0 34px;user-select:none}
 footer{padding-top:30px}
+
+/* ---- mobile fit ---- */
+@media(max-width:780px){
+.hero .wrap{grid-template-columns:minmax(0,1fr);gap:34px}
+.hero{padding:104px 0 56px}
+.photo{order:-1;justify-self:center;width:min(78vw,300px)}
+.photo::before{right:-12px;bottom:-12px;top:14px;left:14px}
+.ftag{left:-6px;bottom:22px;padding:10px 14px}
+.hero h1.name{font-size:clamp(44px,15vw,72px)}
+.stats{max-width:none}
+.stats b{font-size:32px}
+.band-in,.coll{gap:12px}
+}
+@media(max-width:480px){
+.wrap{padding:0 18px}
+section{padding:78px 0}
+section h2{font-size:clamp(32px,10vw,44px);margin-bottom:34px}
+.stats{grid-template-columns:repeat(3,1fr);gap:8px}
+.stats>div{padding:12px 12px}
+.stats span{font-size:9.5px}
+.btns .btn,.hero .cvwrap{width:100%}
+.hero .cvwrap .btn{width:100%;text-align:center}
+.btns{flex-direction:column;align-items:stretch}
+.cvmenu{width:min(310px,calc(100vw - 36px))}
+.about>div:first-child{padding:22px}
+.feat-in{padding:20px}
+.lgs{gap:8px}
+.lg img{height:24px}
+.bigword{font-size:15vw}
+.foot{justify-content:center;text-align:center}
+}
+
+html{overflow-x:hidden}
+body{overflow-x:clip}
+@media(max-width:780px){html.js .rv{--dx:0px!important}}
 </style>
 </head>
 <body>
