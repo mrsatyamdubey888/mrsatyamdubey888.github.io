@@ -557,7 +557,7 @@ html,html *{cursor:auto}a,button,[role=button],.pstack,.tab,.chips span,.hw,.im,
 .likebtn:hover{background:#8c8c8c;color:#0a0a0a;border-color:#8c8c8c;transform:translateY(-2px)}
 .likebtn:active{transform:scale(.94)}
 .likebtn svg{transition:transform .35s,fill .25s,color .25s}
-.likebtn.on{border-color:rgba(255,77,109,.6)}
+.likebtn.on{border-color:rgba(255,77,109,.6);cursor:default}
 .likebtn.on svg{fill:#ff4d6d;color:#ff4d6d;animation:heartpop .55s cubic-bezier(.2,.9,.3,1.4)}
 .likebtn.on:hover svg{color:#c62a48;fill:#c62a48}
 .lc{font:600 12px/1 "JetBrains Mono",monospace;background:rgba(255,255,255,.16);padding:4px 8px;border-radius:99px}
@@ -809,20 +809,22 @@ requestAnimationFrame(loop)})();
 })();
 
 (function(){
-var NS="mrsatyamdubey888",API="https://api.counterapi.dev/v1/",rm=matchMedia("(prefers-reduced-motion: reduce)").matches;
+var NS="mrsatyamdubey888.github.io",API="https://abacus.jasoncameron.dev/",rm=matchMedia("(prefers-reduced-motion: reduce)").matches;
 function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
 function fmt(n){return n>=1000?(n/1000).toFixed(1).replace(".0","")+"k":String(n)}
-function show(b,n){var c=b.querySelector(".lc");if(typeof n!=="number"){c.hidden=true;return}c.hidden=false;c.textContent=fmt(Math.max(0,n))}
-function set(b,on){b.classList.toggle("on",on);b.setAttribute("aria-pressed",on);b.querySelector(".ll").textContent=on?"Liked":"Like"}
-function call(key,act){return fetch(API+NS+"/"+key+(act?"/"+act:""),{cache:"no-store"}).then(function(r){if(r.status===404)return 0;if(!r.ok)throw 0;return r.json()}).then(function(j){return typeof j==="number"?j:(j&&typeof j.count==="number"?j.count:null)})}
+function show(b,n){b.querySelector(".lc").textContent=fmt(Math.max(0,n))}
+function set(b,on){b.classList.toggle("on",on);b.setAttribute("aria-pressed",on);b.querySelector(".ll").textContent=on?"Liked":"Like";b.title=on?"Thanks for the like!":"Like this project"}
+function call(act,key){return fetch(API+act+"/"+NS+"/"+key,{cache:"no-store"}).then(function(r){if(r.status===404)return 0;if(!r.ok)throw 0;return r.json()}).then(function(j){return typeof j==="number"?j:(j&&typeof j.value==="number"?j.value:null)})}
 function burst(b){if(rm)return;var cs=["#ff4d6d","#ff8fa3","#ffffff","#ffb3c1"];for(var i=0;i<9;i++){var s=document.createElement("span");s.className="hp";s.textContent="\u2665";s.style.color=cs[i%4];b.appendChild(s);var a=(-90+(i-4)*22)*Math.PI/180,d=34+Math.random()*30;s.animate([{transform:"translate(0,0) scale(.6)",opacity:1},{transform:"translate("+Math.cos(a)*d+"px,"+(Math.sin(a)*d)+"px) scale(1.25)",opacity:0}],{duration:700+Math.random()*300,easing:"cubic-bezier(.2,.8,.2,1)"}).onfinish=(function(q){return function(){q.remove()}})(s)}}
 [].slice.call(document.querySelectorAll(".likebtn")).forEach(function(b){
-var key=b.dataset.key,mine=ls("liked:"+key)==="1";set(b,mine);b._n=mine?1:0;show(b,b._n);
-call(key,"").then(function(n){if(typeof n==="number"){b._n=Math.max(n,mine?1:0);show(b,b._n)}}).catch(function(){});
+var key=b.dataset.key,mine=ls("likedv2:"+key)==="1";set(b,mine);b._n=mine?1:0;show(b,b._n);
+call("get",key).then(function(n){
+if(mine&&ls("syncedv2:"+key)!=="1"){return call("hit",key).then(function(m){ls("syncedv2:"+key,"1");return m})}
+return n}).then(function(n){if(typeof n==="number"){b._n=n;show(b,n)}}).catch(function(){});
 b.addEventListener("click",function(){
-var on=!b.classList.contains("on");set(b,on);ls("liked:"+key,on?"1":null);if(on)burst(b);
-b._n=Math.max(0,(b._n||0)+(on?1:-1));show(b,b._n);
-call(key,on?"up":"down").then(function(n){if(typeof n==="number"){b._n=n;show(b,n)}}).catch(function(){})})});
+if(b.classList.contains("on")){if(!rm)b.querySelector("svg").animate([{transform:"scale(1)"},{transform:"scale(1.45)"},{transform:"scale(1)"}],{duration:420});return}
+set(b,true);ls("likedv2:"+key,"1");burst(b);b._n=(b._n||0)+1;show(b,b._n);
+call("hit",key).then(function(n){ls("syncedv2:"+key,"1");if(typeof n==="number"){b._n=n;show(b,n)}}).catch(function(){})})});
 })();
 </script>
 </body>
